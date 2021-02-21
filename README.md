@@ -11,7 +11,7 @@
 
 ## 📋 Table of Contents
 
-1. [Running as a boilerplate](#-running-as-a-boilerplate)
+1. [Running as a boilerplate](#%EF%B8%8F-running-as-a-boilerplate)
 1. [Motivation](#-motivation)
 1. [Objective](#-objective)
 1. [Tooling](#%EF%B8%8F-tooling)
