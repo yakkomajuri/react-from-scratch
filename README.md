@@ -119,6 +119,40 @@ yarn add --dev @types/react @types/react-dom @types/react-redux
 
 These packages contain the type declaration for the modules we'll be using throughout the project.
 
+And we also need a `tsconfig.json` file - I'm using [the config from here, which we use in production](https://github.com/PostHog/posthog.com/blob/master/tsconfig.json):
+
+```json
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "paths": {
+            "types/*": ["./types/*"]
+        },
+        // https://www.sitepoint.com/react-with-typescript-best-practices/
+        "allowJs": true, // Allow JavaScript files to be compiled
+        "skipLibCheck": true, // Skip type checking of all declaration files
+        "esModuleInterop": true, // Disables namespace imports (import * as fs from "fs") and enables CJS/AMD/UMD style imports (import fs from "fs")
+        "allowSyntheticDefaultImports": true, // Allow default imports from modules with no default export
+        "strict": true, // Enable all strict type checking options
+        "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
+        "module": "esnext", // Specify module code generation
+        "moduleResolution": "node", // Resolve modules using Node.js style
+        "resolveJsonModule": true, // Include modules imported with .json extension
+        "noEmit": true, // Do not emit output (meaning do not compile code, only perform type checking)
+        "jsx": "react", // Support JSX in .tsx files
+        "sourceMap": true, // Generate corrresponding .map file
+        "declaration": true, // Generate corresponding .d.ts file
+        "noUnusedLocals": true, // Report errors on unused locals
+        "noUnusedParameters": true, // Report errors on unused parameters
+        "experimentalDecorators": true, // Enables experimental support for ES decorators
+        "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statement
+        "lib": ["dom", "es2019.array"]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules/**/*", "staticfiles/**/*", "frontend/dist/**/*"]
+}
+```
+
 ### Webpack
 
 Webpack also needs a lot of stuff to work. Essentially, for every type of file we want to bundle, we'll need a specific loader.
@@ -186,7 +220,147 @@ module.exports = {
 
 ```
 
+### React
 
+Given that this is a React app, we need some React packages too!
 
+This should be enough:
 
+```shell
+yarn add react react-dom react-hot-loader
+```
 
+`react` is self-explanatory. `react-dom` will be used to render our app on `index.tsx`, and `react-hot-loader` is used for development - it will auto update our app on file changes.
+
+### Kea
+
+Lastly, we need to set up our state management library, Kea.
+
+From the [Kea Docs](https://kea.js.org/docs/installation/instructions), here's what you need:
+
+```shell
+yarn add kea redux react-redux reselect
+```
+
+We'll think ahead here as well and also grab us a separate package used when Kea logic is written in TypeScript:
+
+```shell
+yarn add --dev kea-typegen
+```
+
+### package.json
+
+With all this set up, we should add a few useful scripts to our `package.json` file:
+
+```json
+    ...
+    "scripts": {
+        "start": "webpack serve --mode development",
+        "typegen": "kea-typegen write ./src"
+    },
+    ...
+```
+
+`start` will be used to run our server, and `typegen` to generate types for our Kea logic files.
+
+## 💻 Finally, some React code
+
+Quite a bit of setup, huh? I guess we should be thankful for boilerplates, especially when they manage all the dependencies and versioning for us (_cough_ [react-scripts](https://github.com/facebook/create-react-app/tree/master/packages/react-scripts)).
+
+Nevertheless, we're now done with setup, so onto some code!
+
+### But first, some vanilla HTML
+
+The first thing we need is an `index.html` file, the one piece of "legacy code" that React will use to render our app. This is the only file we'll have in `public/` in this tutorial.
+
+Here's my `index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>React from Scratch</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <noscript> You need to enable JavaScript to access this website. </noscript>
+        <script src="../dist/bundle.js"></script>
+    </body>
+</html>
+```
+
+There are a few things happening here:
+* We're setting a few default meta tags, as well as a title for our website
+* We specified a `root` div, which we'll use to render our App (this is essentially the starting point from which React will handle all the DOM modifications)
+* We added a message for those that have JavaScript disabled, as our app won't work for them
+* We imported our finished Webpack bundle, which we haven't actually generated yet
+    * This will contain all the code we write in a single file
+
+### The entry point
+
+Remember the mention to entry point from earlier? Well now we've gotten to it. Go into the `src/` subdir and make a new file called `index.tsx`. 
+
+Here's what I have in mine:
+
+```js
+import React from 'react'
+import ReactDOM from 'react-dom' 
+import { Provider } from 'react-redux'
+import { getContext, resetContext } from 'kea'
+import { App } from './App'
+
+resetContext({
+    createStore: {},
+    plugins: [],
+})
+
+ReactDOM.render(
+    <Provider store={getContext().store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
+)
+```
+
+There are 3 key things happening here:
+1. We're setting up Kea, which, like Redux, uses `Provider` to make the store available to any nested components (in this case, our entire app)
+    - The `resetContext` call is not actually needed here, since we're not passing anything to it. However, I've left it here so you know where to add, for example, your Kea plugins, since you'll likely use those
+2. We're importing and rendering our `App` component (which we haven't built yet)
+3. We're telling React to render our app using our `root` div from `index.html` as the "binding point"
+
+### Our App!
+
+Now, create a file called `App.tsx`, also inside `src/`, with the following:
+
+```js
+import React from 'react'
+import { hot } from 'react-hot-loader/root'
+import { MyJSComponent } from './components/MyJSComponent'
+import { Counter } from './components/Counter'
+
+export const App = hot(_App)
+export function _App(): JSX.Element | null {
+    return (
+        <div>
+            <h1>Hello world!</h1>
+            <MyJSComponent />
+            <Counter />
+        </div>
+    )
+}
+```
+
+If you just want to see your app working at this point, you can remove the imports and references to `MyJSComponent` and `Counter` and run `yarn start`. This will start your server and you should be able to access your React app at `localhost:3000`, receiving your 'Hello world!' greeting from it.
+
+The reason I've included these two extra components is to test that we have a few things working:
+1. We can write JavaScript alongside TypeScript
+2. Our state management is working fine
+3. Our bundler processes `.css` files with no problem (`Counter` has some minimal styling)
+
+Hence, you could stop here if you wanted to. But if you want to see these 3 things in action, read on.
+
+### Writing JS and TS side-by-side
+
+As you saw in our `App.tsx` file, we have a TypeScript file importing a JavaScript file with no problems. 
