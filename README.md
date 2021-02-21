@@ -1,5 +1,5 @@
 <h1 align='center' style='margin: auto; text-align: center'>
-    <img src='readme-assets/react.svg' width=25 style='display: inline-block' /> Building a Modern React App from Scratch (2021)
+    <img src='readme-assets/react.svg' width=25 style='display: inline-block' /> Building a Modern React App from Scratch in 2021
     <img src='readme-assets/react.svg' width=25 style='display: inline-block' />
 </h1>
 
