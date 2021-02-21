@@ -8,12 +8,7 @@ module.exports = {
         rules: [
             {
                 test: /\.[jt]sx?$/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [['@babel/preset-react', { targets: 'defaults' }]],
-                    },
-                },
+                loader: 'babel-loader',
                 exclude: /node_modules/,
             },
             {
