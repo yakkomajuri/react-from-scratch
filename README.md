@@ -37,7 +37,7 @@
 If you want to use this repo as a boilerplate, you can simply do:
 
 ```shell
-git clone https://github.com/yakkomajuri/react-scratch
+git clone https://github.com/yakkomajuri/react-from-scratch
 cd react-scratch
 yarn
 yarn start
