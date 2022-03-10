@@ -1,9 +1,9 @@
 <h1 align='center' style='margin: auto; text-align: center'>
-    <img src='readme-assets/react.svg' width=25 style='display: inline-block' /> Building a Modern React App from Scratch in 2021
+    <img src='readme-assets/react.svg' width=25 style='display: inline-block' /> Building a Modern React App from Scratch
     <img src='readme-assets/react.svg' width=25 style='display: inline-block' />
 </h1>
 
-<h4 align='center'>A step-by-step tutorial to setting up a modern React app in 2021 with no boilerplate.</h4>
+<h4 align='center'>A step-by-step tutorial to setting up a modern React app with no boilerplate.</h4>
 
 <br />
 
@@ -51,7 +51,7 @@ The main objective of this tutorial for me was to get myself to better understan
 
 It was very much inspired by the extremely well-written <i>[Creating a React App… From Scratch.](https://blog.usejournal.com/creating-a-react-app-from-scratch-f3c693b84658)</i> by [@paradoxinversion](https://github.com/paradoxinversion), an article that is so good it is referenced in the [official React Docs](https://reactjs.org/docs/create-a-new-react-app.html#creating-a-toolchain-from-scratch).
 
-However, times change, and I wanted to build a modern React app from scratch in 2021. As such, I had a few more "essentials" to include in the toolchain, and wanted to work with the latest versions of core libraries. In some ways, I see this as the `latest` version of the tutorial mentioned above.
+However, times change, and I wanted to build a modern React app from scratch following the latest developments. As such, I had a few more "essentials" to include in the toolchain, and wanted to work with the latest versions of core libraries. In some ways, I see this as the `latest` version of the tutorial mentioned above.
 
 ## 🎯 Objective
 
